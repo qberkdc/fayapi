@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Discord Botu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    
+    <link href="style.css" rel="stylesheet">
+    <script src="script.js"></script>
+
+	<style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #fff;
+            overflow: hidden; /* Yüklenme ekranı gösterilirken sayfanın kaydırılmasını engeller */
+        }
+        .loader {
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease, visibility 1s;
+            opacity: 1;
+            visibility: visible;
+        }
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #680000;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        header {
+            background-color: #1c1c1c;
+            padding: 10px 20px;
+            border-bottom: 2px solid #333;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+        .logo2 img {
+            width: 128px;
+            height: 128px;
+        }
+        .menu-icon {
+            font-size: 2em;
+            cursor: pointer;
+            display: none;
+        }
+        nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: #1c1c1c;
+            border-top: 2px solid #333;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease-in-out;
+        }
+        nav.open {
+            max-height: 200px; /* Adjust according to your content */
+        }
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 20px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #444;
+        }
+        .container {
+            padding: 50px 20px;
+            text-align: center;
+        }
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .feature {
+            background-color: #1c1c1c;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 1.0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 6px rgba(255, 0, 0, 1.0);
+        }
+        .text {
+        	font-family: 'Roboto Condensed', sans-serif;
+     	   font-weight: 700;
+        	color: white;
+        }
+        .feature h3 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+        .feature p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1em;
+            color: #aaa;
+        }
+        .divider {
+            height: 2px;
+            width: 80%;
+            background-color: #333;
+            margin: 40px auto;
+        }
+        footer {
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-top: 2px solid #333;
+            text-align: center;
+        }
+        footer p {
+            margin: 0;
+            color: #888;
+        }
+        .btn {
+            background-color: #680000;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.85em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #350000;
+            transform: translateY(-5px);
+        }
+        @media (max-width: 768px) {
+            .menu-icon {
+                display: block;
+            }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+        	font-family: 'Roboto Condensed', sans-serif;
+     	   font-weight: 700;
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #353535;
+            text-align: left;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Düğmeler arasındaki boşluk */
+        }
+        .custom-button {
+            background-color: #404040; /* Arka plan rengi */
+            color: white; /* Yazı rengi */
+            padding: 10px 20px; /* İçerik boşluğu */
+            border: none; /* Kenarlık kaldırma */
+            border-radius: 20px; /* Kenarlık yuvarlama */
+            font-size: 16px; /* Yazı boyutu */
+            font-family: 'Open Sans', sans-serif; /* Yazı tipi */
+            display: inline-flex; /* İçeriği yan yana yerleştirme */
+            align-items: center; /* Dikey hizalama */
+            cursor: pointer; /* Fare imlecini işaretçi yapma */
+            transition: background-color 0.3s ease; /* Hover animasyonu */
+            text-decoration: none; /* Metin alt çizgisi kaldırma */
+        }
+        .custom-button:hover {
+            background-color: #181818; /* Hover durumu arka plan rengi */
+        }
+        .custom-button img {
+            margin-right: 10px; /* İkon ve yazı arasındaki boşluk */
+            width: 24px; /* İkon boyutu */
+            height: 24px; /* İkon boyutu */
+        }
+    </style>
+</head>
+<body onload="hideLoader()">
+	<div id="snowflakes-container"></div>
+
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+    </div>
+    <header>
+        <div class="logo">
+            <img src="https://cdn.discordapp.com/attachments/1063104543753244732/1243354978173845584/Picsart_24-05-24_03-08-11-195.png?ex=66512c0f&is=664fda8f&hm=a64b5877a4fa4447056e342593f9b6b4ed84cfa397acd3c7c4c597f7b170d54b&" alt="Discord Logo"> <a class="text" href="https://discord.com/invite/xDCUd3nf3m"> Sunucuya Katıl </a>
+        </div>
+        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+        <nav id="menu" class="closed">
+            <a onclick="toggleMenu()" href="#features">Özellikler</a>
+            <a onclick="toggleMenu()" href="https://discord.com/api/oauth2/authorize?client_id=1022087241868263445&permissions=347200&scope=bot%20applications.commands">Botu Davet Et</a>
+            <a onclick="toggleMenu()" href="#contact">İletişim</a>
+            <a onclick="toggleMenu()" href="#commands">Komutlar</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="logo logo2">
+            <img style="display: block; margin: auto;" src="https://cdn.discordapp.com/attachments/1063104543753244732/1243358772051837061/Picsart_24-05-24_03-23-38-212.png?ex=66512f97&is=664fde17&hm=fa4054b6f984000fc087202f20b9862f84d7d1cef5dc967fe4f5773b4f374512&" alt="Discord Logo">
+        </div>
+        <h2>Fayapı</h2>
+        <a id="invite" href="https://discord.com/api/oauth2/authorize?client_id=1022087241868263445&permissions=347200&scope=bot%20applications.commands" class="btn">Botu Davet Et</a>
+        <div class="divider"></div>
+        <p id="features">Botumuzun Özeti</p>
+        <div class="features">
+            <div class="feature">
+                <h3>Anime Oyunu</h3>
+                <p>Anime karakterinizi geliştirdiğiniz
+				Bir savaşma oyunudur</p>
+            </div>
+            <div class="feature">
+                <h3>Bir çok özellik</h3>
+                <p>Gelişmiş savaşma modları</p>
+            </div>
+            <div class="feature">
+                <h3>Herkese açık Bosslar</h3>
+                <p>Zamanlı yenilenen boss herkes saldırabilir
+				Boss'u yenen kişi ödüllendirilir</p>
+            </div>
+            <div class="feature">
+                <h3>Ekipmanlar ve Geliştirmeler</h3>
+                <p>Karakterinize ekipman giydirip
+				Daha çok güçlendirebilirsiniz</p>
+            </div>
+        <div class="divider"></div>
+        <p id="commands">Botun Komutları</p>
+        <table>
+      	<tr> <th>Komutlar</th> <th>Bilgi</th> </tr>
+          <tr> <td>+k</td> <td>Karakter Bilgisi</td> </tr>
+		  <tr> <td>+satınal</td> <td>Karakter Satın Al</td> </tr>
+          <tr> <td>+ara</td> <td>Karakter Ara</td> </tr>
+  		<tr> <td>+seç</td> <td>Karakteri Seç</td> </tr>
+  		<tr> <td>+geliştir</td> <td>Karakterinin Statüsünü Güçlendir</td> </tr>
+  		<tr> <td>+c</td> <td>CPU'ya Meydan Oku</td> </tr>
+  		<tr> <td>+vs</td> <td>Oyuncu'ya Meydan Oku</td> </tr>
+  		<tr> <td>+y</td> <td>Komutların Listesi</td> </tr>
+  		<tr> <td>+günlük</td> <td>Günlūk Ödül</td> </tr>
+  		<tr> <td>+yenile</td> <td>Karakterinizin Canını Yenileyin</td> </tr>
+  		<tr> <td>+gönder</td> <td>Altınlarınızı Paylaşın</td> </tr>
+  		<tr> <td>+market-k</td> <td>Karakter Satın Alma Menüsü</td> </tr>
+  		<tr> <td>+rank</td> <td>Sıralama Listesi</td> </tr>
+  		<tr> <td>+premium</td> <td>Premium Üyelik Alın</td> </tr>
+  		<tr> <td>+fb</td> <td>Farmbot Komutları & Kullanım</td> </tr>
+  		<tr> <td>+boss</td> <td>Dünya Boss'u Ile Savaş</td> </tr>
+  		<tr> <td>+garanti</td> <td>Garanti Belgesi Ile Avantajlı Üyelik</td> </tr>
+  		<tr> <td>+env</td> <td>Envanteriniz</td> </tr>
+  		<tr> <td>+aç</td> <td>6 Sandık'tan Birini Açın</td> </tr>
+  		<tr> <td>+top</td> <td>Etkinlik Sıralaması & Ödüller</td> </tr>
+  		<tr> <td>+market</td> <td>Güçlenmek için ekipman alın</td> </tr>
+  		<tr> <td>+tak</td> <td>Ekipmanı Mevcut Karakterinize Giydirin</td> </tr>
+  		<tr> <td>+çıkart</td> <td>Ekipmanı Giydirdiğiniz Karakterden Çıkartın</td> </tr>
+  		<tr> <td>+e-geliştir</td> <td>Ekipmanı Geliştirin</td> </tr>
+  		<tr> <td>+limit</td> <td>Altın Paylaşma Limitini Yükseltir</td> </tr>
+  		<tr> <td>+birleştir</td> <td>Yükseltme Taşlarını Birleştirin</td> </tr>
+  		<tr> <td>+slot</td> <td>3'ü Bir Arada Kazanın</td> </tr>
+  		<tr> <td>+anahtar</td> <td>Sandık Anahtarı Alın</td> </tr>
+  		<tr> <td>+araştır</td> <td>Girilen Ekipman Kimliğinin Özelliğini Gösterir</td> </tr>
+  		<tr> <td>+b-gönder</td> <td>Biletlerinizi Paylaşın</td> </tr>
+  		<tr> <td>+shop</td> <td>Paranızla Çeşitli Şeyler Alın</td> </tr>
+  		<tr> <td>+çözümle</td> <td>Ekipman Setinizin Kimliğini Çözümler</td> </tr>
+  		<tr> <td>+macera</td> <td>Macera'ya Çıkın, Her Aşama Daha Çok Zorluk</td> </tr>
+  		<tr> <td>+ünvan</td> <td>Ünvanınızı Seçin Havalı Gözükün</td> </tr>
+  		<tr> <td>+yetkilerim</td> <td>Bot Üzerinizdeki Yetkileriniz</td> </tr>
+  	  </table>
+  	  <div class="divider"></div>
+   	 <table>
+          <tr> <th>Admin Komutları</th> <th>Bilgi</th> <th>Bayrak</th> </tr>
+   	   <tr> <td>+ban</td> <td>Kullanıcıyı Yasakla</td> <td>A</td> </tr>
+   	   <tr> <td>+unban</td> <td>Kullanıcı Yasağını Kaldır</td> <td>B</td> </tr>
+   	   <tr> <td>+altın</td> <td>Kullanıcıya Altın Gönder</td> <td>C</td> </tr>
+   	   <tr> <td>+güncelle</td> <td>Karakter Bilgisi Güncelle</td> <td>D</td> </tr>
+   	   <tr> <td>+sıfırla</td> <td>Değişken Verisini Sıfırla</td> <td>E</td> </tr>
+   	   <tr> <td>+sandık</td> <td>Kullanıcıya Sandık Gönder</td> <td>F</td> </tr>
+   	   <tr> <td>+k-sıfırla</td> <td>Karakteri Sıfırla</td> <td>G</td> </tr>
+   	   <tr> <td>+bilet</td> <td>Kullanıcıya Bilet Gönder</td> <td>H</td> </tr>
+   	   <tr> <td>+ekipman</td> <td>Kullanıcıya Ekipman Gönder</td> <td>K</td> </tr>
+   	   <tr> <td>+ünvan-ekle</td> <td>Kullanıcıya Özel Ünvan Ver</td> <td>L</td> </tr>
+   	   <tr> <td>+fiş</td> <td>Alışveriş Fiş Kodu Çözümler</td> <td>M</td> </tr>
+   	   <tr> <td>+taş</td> <td>Kullanıcıya Geliştirme Taşı Gönder</td> <td>N</td> </tr>
+   	   <tr> <td>+ünvan-kaldır</td> <td>Kullanıcıdan Ünvan Kaldır</td> <td>O</td> </tr>
+   	   <tr> <td>+bilgi</td> <td>Kullanıcının Statü Bilgisi</td> <td>P</td> </tr>
+  	  </table>
+        </div>
+    </div>
+    
+    <div class="button-container"> <a href="https://instagram.com/_berk2004" class="custom-button"> <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Button"> Instagram </a>
+    <a href="https://discord.com/users/640619062338125886" class="custom-button"> <img src="https://static.vecteezy.com/system/resources/thumbnails/023/986/612/small/discord-logo-discord-logo-transparent-discord-icon-transparent-free-free-png.png" alt="Button"> Discord </a> 
+    <a href="https://github.com/qberkdc" class="custom-button"> <img src="https://seeklogo.com/images/G/github-logo-7880D80B8D-seeklogo.com.png" alt="Button"> Github </a> </div>
+    
+    <p> </p>
+    <footer>
+        <p id="contact">© 2024 Fayapı (Fighter Arena Based). Tüm hakları saklıdır.</p>
+        <p>Geliştirici: berkch</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                menu.classList.add('closed');
+            } else {
+                menu.classList.remove('closed');
+                menu.classList.add('open');
+            }
+        }
+
+        function hideLoader() {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Yüklenme ekranı kaybolduğunda sayfanın kaydırılabilir olmasını sağlar
+            }, 1500); // 1.5 saniye bekle
+        }
+    </script>
+</body>
+</html>
