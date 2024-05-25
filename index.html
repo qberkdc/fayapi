@@ -25,6 +25,39 @@
             color: #fff;
             overflow: hidden; /* Yüklenme ekranı gösterilirken sayfanın kaydırılmasını engeller */
         }
+
+	.luxury-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 350px;
+            border-radius: 15px;
+            background-color: #333333;
+            overflow: hidden;
+        }
+        .luxury-list li {
+            padding: 15px 30px; /* Boşlukları azalttık */
+            border-bottom: 1px solid #444;
+            position: relative;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column; /* Öğeleri yatay değil, dikey düzende göstermek için */
+            align-items: flex-start; /* Başlık ve alt başlıkları sola hizalama */
+        }
+        .luxury-list li:last-child {
+            border-bottom: none;
+        }
+        .luxury-list li:hover {
+            background-color: #555;
+            transform: translateY(-5px);
+        }
+        .sub-text {
+            font-size: 14px;
+            color: #999999;
+            margin-top: 3px; /* Boşlukları azalttık */
+            margin-bottom: 0; /* Alt başlık altındaki boşluğu kaldırdık */
+	}
+		
         .loader {
             position: fixed;
             z-index: 999;
@@ -275,6 +308,22 @@
             </div>
         <div class="divider"></div>
         <p id="commands">Botun Komutları</p>
+
+	<ul class="luxury-list">
+        <li>
+            <h3 style="margin: 0;">Liste Öğesi 1</h3>
+            <p class="sub-text">Açıklama 1</p>
+        </li>
+        <li>
+            <h3 style="margin: 0;">Liste Öğesi 2</h3>
+            <p class="sub-text">Açıklama 2</p>
+        </li>
+        <li>
+            <h3 style="margin: 0;">Liste Öğesi 3</h3>
+            <p class="sub-text">Açıklama 3</p>
+        </li>
+	</ul>
+		
         <table>
       	<tr> <th>Komutlar</th> <th>Bilgi</th> </tr>
           <tr> <td>+k</td> <td>Karakter Bilgisi</td> </tr>
