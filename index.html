@@ -414,6 +414,21 @@
                 document.body.style.overflow = 'auto'; // Yüklenme ekranı kaybolduğunda sayfanın kaydırılabilir olmasını sağlar
             }, 1500); // 1.5 saniye bekle
         }
+
+	// Ekran genişliğini kontrol etmek için bir fonksiyon
+        function checkWidthAndRedirect() {
+            // Ekran genişliği
+            var screenWidth = window.innerWidth;
+
+            // Eğer ekran genişliği 768 pikselin altındaysa (mobil cihazlar için genellikle geçerli)
+            if (screenWidth > 768) {
+                // Mobil sürüme yönlendirme yap
+                window.location.href = "index.html"; // Mobil sürümün URL'si
+            }
+        }
+
+        // Sayfa yüklendiğinde kontrol fonksiyonunu çağır
+        window.onload = checkWidthAndRedirect;
     </script>
 </body>
 </html>
